@@ -5,8 +5,8 @@ import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { getPostUrlBySlug } from "../utils/url-utils";
 
-export let tags: string[];
-export let categories: string[];
+export let tags: string[] = [];
+export let categories: string[] = [];
 export let sortedPosts: Post[] = [];
 
 const params = new URLSearchParams(window.location.search);
@@ -30,6 +30,7 @@ interface Group {
 }
 
 let groups: Group[] = [];
+let loaded = false;
 
 function formatDate(date: Date) {
 	const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -82,10 +83,15 @@ onMount(async () => {
 	groupedPostsArray.sort((a, b) => b.year - a.year);
 
 	groups = groupedPostsArray;
+	loaded = true;
 });
 </script>
 
 <div class="card-base px-8 py-6">
+    <h1 class="journal-archive-heading">{categories.length ? categories.join(" / ") : tags.length ? tags.join(" / ") : "所有文章"}</h1>
+    {#if loaded && groups.length === 0}
+        <p class="journal-empty">这个栏目还没有文章，慢慢写。</p>
+    {/if}
     {#each groups as group}
         <div>
             <div class="flex flex-row w-full items-center h-[3.75rem]">

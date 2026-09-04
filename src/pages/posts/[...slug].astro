@@ -35,9 +35,11 @@ const jsonLd = {
 	keywords: entry.data.tags,
 	author: {
 		"@type": "Person",
-		name: profileConfig.name,
-		url: Astro.site,
+		name: entry.data.author || profileConfig.name,
+		url: entry.data.authorUrl || (entry.data.author ? undefined : Astro.site),
 	},
+	isBasedOn: entry.data.sourceUrl,
+	license: entry.data.licenseUrl,
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
 	inLanguage: entry.data.lang
 		? entry.data.lang.replace("_", "-")
@@ -49,7 +51,7 @@ const jsonLd = {
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
         <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
-            {}
+            {"editorial-article": entry.data.lang === "en"}
         ]}>
             <!-- word count and reading time -->
             <div class="flex flex-row text-black/30 dark:text-white/30 gap-5 mb-3 transition onload-animation">
@@ -57,7 +59,7 @@ const jsonLd = {
                     <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
                         <Icon name="material-symbols:notes-rounded"></Icon>
                     </div>
-                    <div class="text-sm">{remarkPluginFrontmatter.words} {" " + i18n(I18nKey.wordsCount)}</div>
+                    <div class="text-sm">{remarkPluginFrontmatter.words} {entry.data.lang === "en" ? "words" : i18n(I18nKey.wordsCount)}</div>
                 </div>
                 <div class="flex flex-row items-center">
                     <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
@@ -71,20 +73,21 @@ const jsonLd = {
 
             <!-- title -->
             <div class="relative onload-animation">
-                <div
+                <h1
                     data-pagefind-body data-pagefind-weight="10" data-pagefind-meta="title"
-                    class="transition w-full block font-bold mb-3
+                    class="magazine-article-title transition w-full block font-bold mb-3
                     text-3xl md:text-[2.25rem]/[2.75rem]
                     text-black/90 dark:text-white/90
                     md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
                     before:absolute before:top-[0.75rem] before:left-[-1.125rem]
                 ">
                     {entry.data.title}
-                </div>
+                </h1>
             </div>
 
             <!-- metadata -->
             <div class="onload-animation">
+                <p class="journal-byline">by {entry.data.author || profileConfig.name}{entry.data.sourceUrl && <span>选读 · 英文原文 · 下列日期为原作日期</span>}</p>
                 <PostMetadata
                         class="mb-5"
                         published={entry.data.published}
@@ -105,6 +108,19 @@ const jsonLd = {
             <Markdown class="mb-6 markdown-content onload-animation">
                 <Content />
             </Markdown>
+
+            {entry.data.sourceUrl &&
+                <aside class="article-source" lang="zh-CN" data-pagefind-ignore>
+                    <p>
+                        作者：
+                        {entry.data.authorUrl
+                            ? <a href={entry.data.authorUrl}>{entry.data.author || profileConfig.name}</a>
+                            : (entry.data.author || profileConfig.name)}
+                    </p>
+                    <p>原文来源：<a href={entry.data.sourceUrl}>访问原文</a></p>
+                    {entry.data.licenseUrl && <p>转载许可：<a href={entry.data.licenseUrl}>查看授权协议</a></p>}
+                </aside>
+            }
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
 

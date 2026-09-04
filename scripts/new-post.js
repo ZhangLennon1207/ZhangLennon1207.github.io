@@ -42,15 +42,17 @@ if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true })
 }
 
+const yamlTitle = JSON.stringify(args[0])
 const content = `---
-title: ${args[0]}
+title: ${yamlTitle}
 published: ${getDate()}
 description: ''
 image: ''
 tags: []
-category: ''
-draft: false 
-lang: ''
+category: 随笔
+author: Zhang Lennon
+draft: true
+lang: zh-CN
 ---
 `
 

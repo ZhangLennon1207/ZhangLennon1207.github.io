@@ -1,0 +1,75 @@
+media:
+  - name: post_images
+    label: 文章图片
+    input: public/images/posts
+    output: /images/posts
+    rename: safe
+    extensions: [png, jpg, jpeg, webp, avif, gif]
+
+content:
+  - name: posts
+    label: 文章
+    type: collection
+    path: src/content/posts
+    format: yaml-frontmatter
+    filename:
+      template: "{year}-{month}-{day}-{title}.md"
+      field: create
+    view:
+      fields: [title, published, category, draft]
+      primary: title
+      sort: published
+      order: desc
+    fields:
+      - { name: title, label: 标题, type: string, required: true }
+      - { name: description, label: 摘要, type: text, description: 显示在首页文章卡片和搜索结果中。 }
+      - name: published
+        label: 发布日期
+        type: date
+        required: true
+        options: { format: yyyy-MM-dd }
+      - name: category
+        label: 栏目
+        type: select
+        required: true
+        options: { values: [随笔, 乐评, 旅行, 哲学, AI, 电影] }
+      - { name: tags, label: 标签, type: string, list: true }
+      - name: image
+        label: 封面图
+        type: image
+        options: { media: post_images, path: public/images/posts, rename: safe }
+      - { name: author, label: 作者, type: string, default: Zhang Lennon }
+      - name: lang
+        label: 正文语言
+        type: select
+        default: zh-CN
+        options:
+          values:
+            - { name: zh-CN, label: 中文 }
+            - { name: en, label: English }
+      - { name: draft, label: 草稿（开启时不会公开）, type: boolean, default: true }
+      - { name: authorUrl, label: 原作者链接（选填）, type: string }
+      - { name: sourceUrl, label: 原文链接（选填）, type: string, description: 填写后文章末尾会自动显示来源。 }
+      - { name: licenseUrl, label: 授权协议链接（选填）, type: string }
+      - name: body
+        label: 正文
+        type: rich-text
+        required: true
+        options:
+          format: markdown
+          switcher: true
+          media: post_images
+          path: public/images/posts
+          rename: safe
+
+  - name: about
+    label: 关于我
+    type: file
+    path: src/content/spec/about.md
+    format: yaml-frontmatter
+    fields:
+      - name: body
+        label: 页面内容
+        type: rich-text
+        required: true
+        options: { format: markdown, switcher: true, media: post_images, rename: safe }

@@ -25,6 +25,8 @@
     "@expressive-code/plugin-collapsible-sections": "^0.41.4",
     "@expressive-code/plugin-line-numbers": "^0.41.4",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/newsreader": "5.3.0",
+    "@fontsource-variable/noto-serif-sc": "5.3.0",
     "@fontsource/roboto": "^5.2.9",
     "@iconify-json/fa6-brands": "^1.2.6",
     "@iconify-json/fa6-regular": "^1.2.4",

@@ -1,3 +1,6 @@
+# Search all writing together, including English articles on the Chinese site.
+# https://pagefind.app/docs/multilingual/#opting-out-of-multilingual-search
+force_language: zh
 exclude_selectors:
   - "span.katex"
   - "span.katex-display"
