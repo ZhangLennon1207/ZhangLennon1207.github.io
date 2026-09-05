@@ -5,8 +5,41 @@ media:
     output: /images/posts
     rename: safe
     extensions: [png, jpg, jpeg, webp, avif, gif]
+  - name: audio
+    label: 音频
+    input: public/audio
+    output: /audio
+    rename: safe
+    extensions: [mp3, m4a, ogg, wav]
 
 content:
+  - name: now
+    label: 生活的 B 面 · 听读记录
+    type: file
+    path: src/data/now.json
+    format: json
+    fields:
+      - { name: musicTitle, label: 最近在听的歌或专辑, type: string }
+      - { name: musicArtist, label: 音乐人, type: string }
+      - { name: musicUrl, label: 音乐平台链接, type: string, description: Apple Music 歌曲或专辑链接会自动提供站内试听；其他平台显示直达链接。 }
+      - name: audioUrl
+        label: 可播放音频（选填）
+        type: file
+        description: 上传你有权分享的音频。留空时使用音乐平台链接，访客自行选择是否播放。
+        options: { media: audio }
+      - { name: bookTitle, label: 最近在读的书, type: string }
+      - { name: bookNote, label: 读书随记, type: text }
+      - { name: bookUrl, label: 书籍链接（选填）, type: string }
+      - { name: filmTitle, label: 最近在看的电影, type: string }
+      - { name: filmNote, label: 观影随记, type: text }
+      - { name: filmUrl, label: 电影链接（选填）, type: string }
+      - name: goatcounterCode
+        label: GoatCounter 站点代码（选填）
+        type: string
+        description: 注册后填写 xxx.goatcounter.com 中的 xxx 即可启用统计，留空时关闭。
+        pattern:
+          regex: '^[a-z0-9-]*$'
+          message: 只填写小写字母、数字和短横线组成的站点代码。
   - name: posts
     label: 文章
     type: collection
@@ -32,7 +65,7 @@ content:
         label: 栏目
         type: select
         required: true
-        options: { values: [随笔, 乐评, 旅行, 哲学, AI, 电影] }
+        options: { values: [随笔, 乐评, 旅行, 哲学, 技术, 电影] }
       - { name: tags, label: 标签, type: string, list: true }
       - name: image
         label: 封面图
@@ -47,6 +80,7 @@ content:
           values:
             - { name: zh-CN, label: 中文 }
             - { name: en, label: English }
+      - { name: pinned, label: 首页置顶, type: boolean, default: false }
       - { name: draft, label: 草稿（开启时不会公开）, type: boolean, default: true }
       - { name: authorUrl, label: 原作者链接（选填）, type: string }
       - { name: sourceUrl, label: 原文链接（选填）, type: string, description: 填写后文章末尾会自动显示来源。 }

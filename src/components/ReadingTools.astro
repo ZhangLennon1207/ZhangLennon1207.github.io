@@ -1,0 +1,8 @@
+---
+const { title } = Astro.props;
+---
+<div class="reading-tools" data-pagefind-ignore>
+  <button type="button" data-focus-reading aria-pressed="false"><span aria-hidden="true">⌖</span> <span data-zh="专注阅读" data-en="Focus">专注阅读</span></button>
+  <button type="button" data-share-article data-title={title}><span aria-hidden="true">↗</span> <span data-zh="分享文章" data-en="Share">分享文章</span></button>
+  <span class="share-result" role="status" aria-live="polite"></span>
+</div>

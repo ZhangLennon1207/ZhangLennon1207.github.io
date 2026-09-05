@@ -1,0 +1,43 @@
+---
+import now from "../data/now.json";
+const audio = now.audioUrl && (/^https:\/\//.test(now.audioUrl) || now.audioUrl.startsWith("/audio/")) ? now.audioUrl : "";
+let embed = "";
+try {
+  const link = new URL(now.musicUrl);
+  if (link.hostname === "music.apple.com" && /^\/[a-z]{2}\/(song|album)\//.test(link.pathname)) {
+    link.hostname = "embed.music.apple.com";
+    embed = link.href;
+  }
+} catch {}
+---
+<section class="now-section" aria-labelledby="now-heading">
+  <div class="section-heading"><h2 id="now-heading" data-zh="生活的 B 面" data-en="The B-side of life">生活的 B 面</h2><span>ON REPEAT / OFF THE PAGE</span></div>
+  <div class="now-grid">
+    <div class="listening-station">
+      <div class="vinyl-wrap"><div class="vinyl" aria-hidden="true"><div class="vinyl-label">BEBOP<br/><small>SIDE B · 33⅓ RPM</small></div></div></div>
+      <div class="listening-copy">
+        <span class="eyebrow" data-zh="耳机里的宇宙" data-en="A universe in headphones">耳机里的宇宙</span>
+        <h3>{now.musicTitle || "Soundtrack to the wandering."}</h3>
+        <p>{now.musicArtist || "JAZZ / SPACE / 万能青年旅店"}</p>
+        {audio && <audio controls preload="none" src={audio} aria-label={now.musicTitle || "音乐播放器"} data-journal-audio/>}
+        {!audio && embed && <button class="music-preview-button" data-music-preview={embed} aria-controls="music-preview" aria-expanded="false"><span aria-hidden="true">▷</span> <span data-zh="试听这首歌" data-en="Preview this track">试听这首歌</span></button>}
+        {now.musicUrl && <a href={now.musicUrl} target="_blank" rel="noopener noreferrer" class="underlined"><span data-zh="在音乐平台打开" data-en="Open in music app">在音乐平台打开</span> ↗</a>}
+        <span class="music-status" aria-live="polite"></span>
+      </div>
+    </div>
+    {!audio && embed && <div id="music-preview" class="music-preview" hidden>
+      <div data-music-frame></div>
+      <p data-zh="Apple Music 试听 · 完整播放由音乐平台提供" data-en="Apple Music preview · full playback on the music platform">Apple Music 试听 · 完整播放由音乐平台提供</p>
+    </div>}
+    <div class="now-notes">
+      <div><span class="eyebrow">READING</span><h3 data-zh={now.bookTitle || "书页之间"} data-en={now.bookTitle || "Between the pages"}>{now.bookTitle || "书页之间"}</h3>
+        {now.bookTitle ? <p>{now.bookNote}</p> : <p data-zh="下一本，读到再记。" data-en="The next book belongs here, once it is read.">下一本，读到再记。</p>}
+        {now.bookUrl && <a href={now.bookUrl} target="_blank" rel="noopener noreferrer" class="underlined" data-zh="关于这本书 ↗" data-en="About the book ↗">关于这本书 ↗</a>}
+      </div>
+      <div><span class="eyebrow">WATCHING</span><h3 data-zh={now.filmTitle || "银幕之外"} data-en={now.filmTitle || "Beyond the screen"}>{now.filmTitle || "银幕之外"}</h3>
+        {now.filmTitle ? <p>{now.filmNote}</p> : <p data-zh="留一个位置，给下一场电影。" data-en="A place for the next film to stay.">留一个位置，给下一场电影。</p>}
+        {now.filmUrl && <a href={now.filmUrl} target="_blank" rel="noopener noreferrer" class="underlined" data-zh="关于这部电影 ↗" data-en="About the film ↗">关于这部电影 ↗</a>}
+      </div>
+    </div>
+  </div>
+</section>

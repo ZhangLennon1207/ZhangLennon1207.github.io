@@ -1,0 +1,29 @@
+---
+import { journalConfig, siteConfig } from "../config";
+import { getCategoryUrl } from "../utils/url-utils";
+const names = ["Essays", "Music", "Travel", "Philosophy", "Technology", "Cinema"];
+---
+<section class="journal-cover" aria-label="刊首">
+  <div class="cover-edition"><span>ZHANG LENNON’S PERSONAL JOURNAL</span><span>EST. 2026 · VOL. 01</span></div>
+  <div class="cover-wordmark" aria-hidden="true">BEBOP<span>NEVER STOP.</span></div>
+  <div class="cover-orbit" aria-hidden="true">
+    <svg viewBox="0 0 240 240" fill="none">
+      <circle cx="120" cy="120" r="84"/><circle cx="120" cy="120" r="104" stroke-dasharray="1 8"/>
+      <ellipse cx="120" cy="120" rx="116" ry="35" transform="rotate(-32 120 120)"/>
+      <path d="M120 12v22M120 206v22M12 120h22M206 120h22"/>
+      <circle class="orbit-point" cx="194" cy="68" r="6"/>
+    </svg>
+    <span>STILL<br/>WANDERING.</span>
+  </div>
+  <div class="cover-story">
+    <div class="cover-line"><span>01 / EDITOR’S NOTE</span><span data-zh="赛博达摩流浪者" data-en="A cyber dharma wanderer">赛博达摩流浪者</span></div>
+    <h1 data-zh={siteConfig.subtitle} data-en="An ostrich. An elephant. A wandering life.">{siteConfig.subtitle}</h1>
+    <p data-zh={journalConfig.about} data-en="Leaving no tracks, calling nowhere home. Beautiful things carry us into the past and the future.">{journalConfig.about}</p>
+    <a class="cover-read" href="#journal-writing"><span data-zh="翻开这一页" data-en="Turn the page">翻开这一页</span><span aria-hidden="true">↓</span></a>
+  </div>
+  <nav class="cover-sections" aria-label="文章栏目">
+    {journalConfig.categories.map((name, i) => <a href={getCategoryUrl(name)}>
+      <span class="section-no">0{i + 1}</span><span data-zh={name} data-en={names[i]}>{name}</span><span class="section-en" aria-hidden="true">{names[i]}</span>
+    </a>)}
+  </nav>
+</section>

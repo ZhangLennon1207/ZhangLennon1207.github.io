@@ -12,6 +12,7 @@ const optionalDate = z.preprocess(
 const postsCollection = defineCollection({
 	schema: z.object({
 		title: z.string(),
+        pinned: z.boolean().default(false),
 		author: z.string().optional(),
 		authorUrl: optionalUrl,
 		sourceUrl: optionalUrl,

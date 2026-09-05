@@ -5,6 +5,8 @@ import "../styles/site.css";
 import "../styles/variables.styl";
 import "../styles/markdown-extend.styl";
 import "../styles/magazine.css";
+import "../styles/journal.css";
+import now from "../data/now.json";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
 import { profileConfig, siteConfig } from "@/config";
@@ -86,6 +88,7 @@ const bannerOffset =
 		<meta charset="UTF-8" />
 		<meta name="description" content={description || pageTitle}>
 		<meta name="author" content={profileConfig.name}>
+        <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
 
 		<meta property="og:site_name" content={siteConfig.title}>
 		<meta property="og:url" content={Astro.url}>
@@ -154,7 +157,10 @@ const bannerOffset =
 	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
 		  data-overlayscrollbars-initialize
 	>
-		<ConfigCarrier></ConfigCarrier>
+		<a class="skip-link" href="#content-wrapper">跳到正文 / Skip to content</a>
+        <script>import "../scripts/journal";</script>
+        {now.goatcounterCode && /^[a-z0-9-]+$/.test(now.goatcounterCode) && <script is:inline data-goatcounter={`https://${now.goatcounterCode}.goatcounter.com/count`} async src="https://gc.zgo.at/count.js"></script>}
+        <ConfigCarrier></ConfigCarrier>
 		<slot />
 
 		<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->

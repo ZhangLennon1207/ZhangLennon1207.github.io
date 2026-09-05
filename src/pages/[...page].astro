@@ -1,15 +1,18 @@
 ---
 import type { GetStaticPaths } from "astro";
+import JournalCover from "../components/JournalCover.astro";
+import NowPlaying from "../components/NowPlaying.astro";
 import Pagination from "../components/control/Pagination.astro";
 import PostPage from "../components/PostPage.astro";
 import { PAGE_SIZE } from "../constants/constants";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 import { getSortedPosts } from "../utils/content-utils";
-import { siteConfig, profileConfig, journalConfig } from "../config";
-import { getCategoryUrl } from "../utils/url-utils";
+
+
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const allBlogPosts = await getSortedPosts();
+	allBlogPosts.sort((a, b) => Number(b.data.pinned) - Number(a.data.pinned));
 	return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
 }) satisfies GetStaticPaths;
 // https://github.com/withastro/astro/issues/6507#issuecomment-1489916992
@@ -20,14 +23,9 @@ const len = page.data.length;
 ---
 
 <MainGridLayout>
-    {page.currentPage === 1 && <section class="magazine-intro" aria-label="刊首">
-        <div class="magazine-kicker">BEBOP NEVER STOP <span>{profileConfig.name}</span></div>
-        <div class="magazine-intro-heading"><h1>{siteConfig.subtitle}</h1></div>
-        <p class="journal-intro-note">{journalConfig.about}</p>
-        <nav class="journal-sections" aria-label="文章栏目">
-            {journalConfig.categories.map(name => <a href={getCategoryUrl(name)}>{name}</a>)}
-        </nav>
-    </section>}
+    {page.currentPage === 1 && <JournalCover />}
+    <div id="journal-writing" class="section-heading writing-heading"><h2 data-zh="文字，持续发生" data-en="The writing goes on">文字，持续发生</h2><span>ESSAYS / MUSIC / TECHNOLOGY</span></div>
     <PostPage page={page}></PostPage>
+    {page.currentPage === 1 && <NowPlaying />}
     {page.lastPage > 1 && <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>}
 </MainGridLayout>

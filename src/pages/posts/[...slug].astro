@@ -1,12 +1,13 @@
 ---
 import path from "node:path";
+import ReadingTools from "../../components/ReadingTools.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
-import { getDir, getPostUrlBySlug } from "@utils/url-utils";
+import { getDir, getPostUrlBySlug, getTagUrl } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { licenseConfig } from "src/config";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
@@ -39,7 +40,7 @@ const jsonLd = {
 		url: entry.data.authorUrl || (entry.data.author ? undefined : Astro.site),
 	},
 	isBasedOn: entry.data.sourceUrl,
-	license: entry.data.licenseUrl,
+	license: entry.data.licenseUrl || (!entry.data.sourceUrl ? new URL("/original-license/", Astro.site).href : undefined),
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
 	inLanguage: entry.data.lang
 		? entry.data.lang.replace("_", "-")
@@ -53,6 +54,7 @@ const jsonLd = {
         <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
             {"editorial-article": entry.data.lang === "en"}
         ]}>
+            <ReadingTools title={entry.data.title} />
             <!-- word count and reading time -->
             <div class="flex flex-row text-black/30 dark:text-white/30 gap-5 mb-3 transition onload-animation">
                 <div class="flex flex-row items-center">
@@ -87,14 +89,15 @@ const jsonLd = {
 
             <!-- metadata -->
             <div class="onload-animation">
-                <p class="journal-byline">by {entry.data.author || profileConfig.name}{entry.data.sourceUrl && <span>选读 · 英文原文 · 下列日期为原作日期</span>}</p>
-                <PostMetadata
+                <p class:list={["journal-byline", {"essay-byline": entry.data.category === "随笔"}]}>by {entry.data.author || profileConfig.name}{entry.data.sourceUrl && <span data-zh="选读 · 下列日期为原作日期" data-en="Selected reading · original publication date">选读 · 下列日期为原作日期</span>}</p>
+                {entry.data.category !== "随笔" && <PostMetadata
                         class="mb-5"
                         published={entry.data.published}
                         updated={entry.data.updated}
                         tags={entry.data.tags}
                         category={entry.data.category}
-                ></PostMetadata>
+                ></PostMetadata>}
+                {entry.data.category === "随笔" && <div class="essay-tags">{entry.data.tags.map(tag => <a href={getTagUrl(tag)}>#{tag}</a>)}</div>}
                 {!entry.data.image && <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>}
             </div>
 
@@ -105,6 +108,10 @@ const jsonLd = {
             }
 
 
+            {siteConfig.toc.enable && headings.length > 0 && <details class="article-contents">
+                <summary data-zh="文章目录" data-en="On this page">文章目录</summary>
+                <nav aria-label="文章目录"><ol>{headings.map(heading => <li style={`padding-inline-start: ${Math.max(0, heading.depth - 2) * 12}px`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav>
+            </details>}
             <Markdown class="mb-6 markdown-content onload-animation">
                 <Content />
             </Markdown>
@@ -122,6 +129,7 @@ const jsonLd = {
                 </aside>
             }
 
+            {!entry.data.sourceUrl && <p class="original-license" data-pagefind-ignore><span data-zh="本文原创，采用" data-en="Original writing, released under">本文原创，采用</span> <a href="/original-license/">MIT License</a> · Zhang Lennon</p>}
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
 
         </div>
