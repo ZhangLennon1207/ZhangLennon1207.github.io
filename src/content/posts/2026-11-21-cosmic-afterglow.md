@@ -5,7 +5,7 @@ category: 随笔
 author: Zhang Lennon
 lang: zh-CN
 pinned: false
-draft: true
+draft: false
 ---
 
 这是好奇心驱动探索里最著名的失败模式。
